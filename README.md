@@ -158,3 +158,65 @@ FROM flights
 ;
 
 ```
+
+
+## Queries 3: Advanced
+
+1. Find the most popular travel destination for users who live in Kansas.
+
+```
+SELECT c.name
+FROM cities c 
+JOIN airports a ON c.id = a.city_id
+JOIN flights f ON a.id = f.destination_id
+JOIN tickets t ON f.id = t.flight_id
+JOIN itineraries i ON t.itinerary_id = i.id
+JOIN users u ON i.user_id = u.id
+WHERE u.state_id = 6
+GROUP BY c.name
+ORDER BY COUNT(f.destination_id) DESC
+LIMIT 1
+;
+
+```
+
+2. How many flights have round trips possible? In other words, we want the count of all airports where there exists a flight FROM that airport and a later flight TO that airport.
+
+```
+SELECT COUNT(f.*)
+FROM flights f
+JOIN flights df ON f.origin_id = df.destination_id
+WHERE f.destination_id = df.origin_id AND f.arrival_time < df.departure_time;
+
+```
+
+3. Find the cheapest flight that was taken by a user who only had one itinerary.
+
+```
+SELECT i.user_id, SUM(f.price), COUNT(i.user_id) AS itinerary_count 
+FROM flights f 
+JOIN tickets t ON f.id = t.flight_id 
+JOIN itineraries i ON t.itinerary_id = i.id  
+GROUP BY i.user_id 
+HAVING COUNT(i.user_id) = 1 
+ORDER BY SUM(f.price)
+LIMIT 1
+;
+
+```
+
+4. Find the average cost of a flight itinerary for users in each state in 2012.
+
+```
+SELECT s.name, AVG(price) 
+FROM flights f 
+JOIN tickets t ON f.id = t.flight_id 
+JOIN itineraries i ON t.itinerary_id = i.id 
+JOIN users u ON i.user_id = u.id 
+JOIN states s ON u.state_id = s.id 
+WHERE f.departure_time BETWEEN '2012-01-01' AND '2012-12-31' 
+GROUP BY s.name
+
+```
+
+
