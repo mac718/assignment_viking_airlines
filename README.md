@@ -48,15 +48,15 @@ SELECT price
 
 ```
 
-5. Find a list of all Airport names and codes which connect to the airport coded PGY.
+5. Find a list of all Airport names and codes which connect to the airport coded XQT.
 
 ```
 SELECT long_name, code 
   FROM airports 
   JOIN flights fo ON airports.id=fo.origin_id 
   JOIN flights fd ON airports.id=fd.destination_id 
-  WHERE fo.destination_id = (SELECT id FROM airports WHERE code = 'PGY') 
-    OR fd.origin_id = (SELECT id FROM airports WHERE code = 'PGY')
+  WHERE fo.destination_id = (SELECT id FROM airports WHERE code = 'XQT') 
+    OR fd.origin_id = (SELECT id FROM airports WHERE code = 'XQT')
 ;
 
 ```
@@ -173,7 +173,7 @@ SELECT c.name
   JOIN tickets t ON f.id = t.flight_id
   JOIN itineraries i ON t.itinerary_id = i.id
   JOIN users u ON i.user_id = u.id
-  WHERE u.state_id = 6
+  WHERE u.state_id = (SELECT id FROM states WHERE name = 'Wyoming')
   GROUP BY c.name
   ORDER BY COUNT(f.destination_id) DESC
   LIMIT 1
@@ -194,13 +194,13 @@ SELECT COUNT(f.*)
 3. Find the cheapest flight that was taken by a user who only had one itinerary.
 
 ```
-SELECT i.user_id, SUM(f.price), COUNT(i.user_id) AS itinerary_count 
+SELECT f.id, f.price
   FROM flights f 
   JOIN tickets t ON f.id = t.flight_id 
   JOIN itineraries i ON t.itinerary_id = i.id  
   GROUP BY i.user_id 
   HAVING COUNT(i.user_id) = 1 
-  ORDER BY SUM(f.price)
+  ORDER BY f.price
   LIMIT 1
 ;
 
