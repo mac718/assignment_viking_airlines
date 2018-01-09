@@ -8,9 +8,9 @@ Mike Coon
 
 ```
 SELECT * 
-FROM users 
-JOIN states ON state_id=states.id 
-WHERE states.name='California'
+  FROM users 
+  JOIN states ON state_id=states.id 
+  WHERE states.name='California'
 ;
 
 ```
@@ -19,9 +19,9 @@ WHERE states.name='California'
 
 ```
 SELECT * 
-FROM airports 
-JOIN states ON state_id=states.id 
-WHERE states.name='Minnesota'
+  FROM airports 
+  JOIN states ON state_id=states.id 
+  WHERE states.name='Minnesota'
 ;
 
 ```
@@ -30,9 +30,9 @@ WHERE states.name='Minnesota'
 
 ```
 SELECT payment_method 
-FROM itineraries 
-JOIN users ON user_id=users.id 
-WHERE email='heidenreich_kara@kunde.net'"
+  FROM itineraries 
+  JOIN users ON user_id=users.id 
+  WHERE email='heidenreich_kara@kunde.net'"
 ;
 
 ```
@@ -41,9 +41,9 @@ WHERE email='heidenreich_kara@kunde.net'"
 
 ```
 SELECT price 
-FROM flights 
-JOIN airports ON origin_id=airports.id 
-WHERE long_name LIKE 'Kochfurt%'
+  FROM flights 
+  JOIN airports ON origin_id=airports.id 
+  WHERE long_name LIKE 'Kochfurt%'
 ;
 
 ```
@@ -52,10 +52,11 @@ WHERE long_name LIKE 'Kochfurt%'
 
 ```
 SELECT long_name, code 
-FROM airports JOIN flights fo ON airports.id=fo.origin_id 
-JOIN flights fd ON airports.id=fd.destination_id 
-WHERE fo.destination_id != (SELECT id FROM airports WHERE code = 'PGY') 
-  OR fd.origin_id != (SELECT id FROM airports WHERE code = 'PGY')
+  FROM airports 
+  JOIN flights fo ON airports.id=fo.origin_id 
+  JOIN flights fd ON airports.id=fd.destination_id 
+  WHERE fo.destination_id = (SELECT id FROM airports WHERE code = 'PGY') 
+    OR fd.origin_id = (SELECT id FROM airports WHERE code = 'PGY')
 ;
 
 ```
@@ -66,12 +67,12 @@ Getting 'missing FROM-clause' error
 
 ```
 SELECT long_name 
-FROM airports 
-JOIN flights ON flights.destination_id=airports.id 
-JOIN tickets ON flights.id=tickets.flight_id 
-JOIN itineraries ON tickets.itinerary_id=intineraries.id 
-JOIN users ON itineraries.user_id=users.id 
-WHERE user_id = (SELECT id FROM users WHERE last_name = 'Hills')
+  FROM airports 
+  JOIN flights ON flights.destination_id=airports.id 
+  JOIN tickets ON flights.id=tickets.flight_id 
+  JOIN itineraries ON tickets.itinerary_id=intineraries.id 
+  JOIN users ON itineraries.user_id=users.id 
+  WHERE user_id = (SELECT id FROM users WHERE last_name = 'Hills')
 ;
 
 ```
@@ -83,11 +84,11 @@ WHERE user_id = (SELECT id FROM users WHERE last_name = 'Hills')
 
 ```
 SELECT * 
-FROM flights 
-JOIN states ON destination_id=states.id  
-WHERE states.name = 'California' 
-ORDER BY price DESC 
-LIMIT 5
+  FROM flights 
+  JOIN states ON destination_id=states.id  
+  WHERE states.name = 'California' 
+  ORDER BY price DESC 
+  LIMIT 5
 ;
 
 ```
@@ -96,13 +97,13 @@ LIMIT 5
 
 ```
 SELECT * 
-FROM flights f 
-JOIN tickets t ON f.id=t.flight_id 
-JOIN itineraries i ON t.itinerary_id=i.id 
-JOIN users u ON i.user_id=u.id 
-WHERE u.username = 'raul' 
-ORDER BY f.distance DESC 
-LIMIT 1
+  FROM flights f 
+  JOIN tickets t ON f.id=t.flight_id 
+  JOIN itineraries i ON t.itinerary_id=i.id 
+  JOIN users u ON i.user_id=u.id 
+  WHERE u.username = 'raul' 
+  ORDER BY f.distance DESC 
+  LIMIT 1
 ;
 
 ```
@@ -111,10 +112,10 @@ LIMIT 1
 
 ```
 SELECT DISTINCT (SUM(fd.distance)/COUNT(fd)) 
-FROM flights fo 
-JOIN states ON fo.origin_id=states.id 
-JOIN flights fd ON fd.destination_id=states.id 
-WHERE states.name = 'Florida'
+  FROM flights fo 
+  JOIN states ON fo.origin_id=states.id 
+  JOIN flights fd ON fd.destination_id=states.id 
+  WHERE states.name = 'Florida'
 ;
 
 ```
@@ -123,29 +124,29 @@ WHERE states.name = 'Florida'
 
 ```
 SELECT users.username
-FROM users 
-JOIN itineraries ON users.id=itineraries.user_id 
-JOIN tickets ON itineraries.id=tickets.itinerary_id 
-JOIN flights ON tickets.flight_id=flights.id 
-WHERE departure_time > '2013-01-01'AND departure_time <= '2013-12-31' 
-GROUP BY users.username 
-ORDER BY SUM(flights.price) DESC
-LIMIT 3
+  FROM users 
+  JOIN itineraries ON users.id=itineraries.user_id 
+  JOIN tickets ON itineraries.id=tickets.itinerary_id 
+  JOIN flights ON tickets.flight_id=flights.id 
+  WHERE departure_time > '2013-01-01'AND departure_time <= '2013-12-31' 
+  GROUP BY users.username 
+  ORDER BY SUM(flights.price) DESC
+  LIMIT 3
 ;
 
 ```
 
-5. Count all flights to or from the city of Lake Vivienne that did not land in Florida
+5. Count all flights to or from the city of Port Mac that did not land in Florida
 
 ```
 SELECT COUNT(*)
-FROM flights
-JOIN airports ao ON ao.city_id = flights.origin_id
-JOIN cities co ON ao.city_id = co.id
-JOIN airports ad ON ad.city_id = flights.destination_id
-JOIN cities cd ON ad.city_id = cd.id
-JOIN states sd ON ad.state_id = sd.id
-WHERE (cd.name = 'Port Mac' OR co.name = 'Port Mac') AND sd.name != 'Florida'
+  FROM flights
+  JOIN airports ao ON ao.city_id = flights.origin_id
+  JOIN cities co ON ao.city_id = co.id
+  JOIN airports ad ON ad.city_id = flights.destination_id
+  JOIN cities cd ON ad.city_id = cd.id
+  JOIN states sd ON ad.state_id = sd.id
+  WHERE (cd.name = 'Port Mac' OR co.name = 'Port Mac') AND sd.name != 'Florida'
 ;
 
 ```
@@ -154,7 +155,7 @@ WHERE (cd.name = 'Port Mac' OR co.name = 'Port Mac') AND sd.name != 'Florida'
 
 ```
 SELECT MIN(distance), MAX(distance)
-FROM flights
+  FROM flights
 ;
 
 ```
@@ -166,16 +167,16 @@ FROM flights
 
 ```
 SELECT c.name
-FROM cities c 
-JOIN airports a ON c.id = a.city_id
-JOIN flights f ON a.id = f.destination_id
-JOIN tickets t ON f.id = t.flight_id
-JOIN itineraries i ON t.itinerary_id = i.id
-JOIN users u ON i.user_id = u.id
-WHERE u.state_id = 6
-GROUP BY c.name
-ORDER BY COUNT(f.destination_id) DESC
-LIMIT 1
+  FROM cities c 
+  JOIN airports a ON c.id = a.city_id
+  JOIN flights f ON a.id = f.destination_id
+  JOIN tickets t ON f.id = t.flight_id
+  JOIN itineraries i ON t.itinerary_id = i.id
+  JOIN users u ON i.user_id = u.id
+  WHERE u.state_id = 6
+  GROUP BY c.name
+  ORDER BY COUNT(f.destination_id) DESC
+  LIMIT 1
 ;
 
 ```
@@ -184,9 +185,9 @@ LIMIT 1
 
 ```
 SELECT COUNT(f.*)
-FROM flights f
-JOIN flights df ON f.origin_id = df.destination_id
-WHERE f.destination_id = df.origin_id AND f.arrival_time < df.departure_time;
+  FROM flights f
+  JOIN flights df ON f.origin_id = df.destination_id
+  WHERE f.destination_id = df.origin_id AND f.arrival_time < df.departure_time;
 
 ```
 
@@ -194,13 +195,13 @@ WHERE f.destination_id = df.origin_id AND f.arrival_time < df.departure_time;
 
 ```
 SELECT i.user_id, SUM(f.price), COUNT(i.user_id) AS itinerary_count 
-FROM flights f 
-JOIN tickets t ON f.id = t.flight_id 
-JOIN itineraries i ON t.itinerary_id = i.id  
-GROUP BY i.user_id 
-HAVING COUNT(i.user_id) = 1 
-ORDER BY SUM(f.price)
-LIMIT 1
+  FROM flights f 
+  JOIN tickets t ON f.id = t.flight_id 
+  JOIN itineraries i ON t.itinerary_id = i.id  
+  GROUP BY i.user_id 
+  HAVING COUNT(i.user_id) = 1 
+  ORDER BY SUM(f.price)
+  LIMIT 1
 ;
 
 ```
@@ -209,13 +210,13 @@ LIMIT 1
 
 ```
 SELECT s.name, AVG(price) 
-FROM flights f 
-JOIN tickets t ON f.id = t.flight_id 
-JOIN itineraries i ON t.itinerary_id = i.id 
-JOIN users u ON i.user_id = u.id 
-JOIN states s ON u.state_id = s.id 
-WHERE f.departure_time BETWEEN '2012-01-01' AND '2012-12-31' 
-GROUP BY s.name
+  FROM flights f 
+  JOIN tickets t ON f.id = t.flight_id 
+  JOIN itineraries i ON t.itinerary_id = i.id 
+  JOIN users u ON i.user_id = u.id 
+  JOIN states s ON u.state_id = s.id 
+  WHERE f.departure_time BETWEEN '2012-01-01' AND '2012-12-31' 
+  GROUP BY s.name
 
 ```
 
